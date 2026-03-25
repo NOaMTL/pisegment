@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AvailableFieldsController;
 use App\Http\Controllers\Api\GenerateLeadsController;
 use App\Http\Controllers\Api\SegmentPreviewController;
+use App\Http\Controllers\AppController;
+use App\Http\Controllers\ApplicationsController;
 use App\Http\Controllers\Segments\EditController;
 use App\Http\Controllers\Segments\ExecuteController;
 use App\Http\Controllers\Segments\IndexController;
@@ -18,9 +20,17 @@ Route::inertia('/', 'Welcome', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
+    // Applications - List all applications with search
+    Route::get('applications', ApplicationsController::class)->name('applications.index');
+
+    // App Details - Show application details by code solution
+    Route::get('app/{id}', AppController::class)
+        ->where('id', '[A-Za-z0-9]{5}')
+        ->name('app.show');
+
     // Segments - Available for all authenticated roles
     Route::get('segments', IndexController::class)->name('segments.index');
-    
+
     // Execute template - Available for agents and managers
     Route::middleware('role:agent,agency_manager,staff')->group(function () {
         Route::get('segments/{template}/execute', ExecuteController::class)->name('segments.execute');
