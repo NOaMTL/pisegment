@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import AppLayout from '@/layouts/AppLayout.vue'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import LogsList from '@/components/LogsList.vue'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { 
-  FileText,
   Globe,
   Activity,
   Clock,
   Package,
+  ArrowRight,
 } from 'lucide-vue-next'
 import { dashboard } from '@/routes'
 import type { BreadcrumbItem } from '@/types'
@@ -60,16 +62,6 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ]
 
-const getLogLevelVariant = (level: string) => {
-  const variants: Record<string, 'default' | 'secondary' | 'destructive'> = {
-    info: 'default',
-    debug: 'secondary',
-    warning: 'default',
-    error: 'destructive',
-  }
-  return variants[level] || 'secondary'
-}
-
 const getStatusVariant = (status: number) => {
   if (status >= 200 && status < 300) return 'default'
   if (status >= 400 && status < 500) return 'default'
@@ -102,7 +94,7 @@ const maxConnections = computed(() =>
           <div>
             <div class="flex items-center gap-3 mb-2">
               <h1 class="text-3xl font-bold">{{ app.name }}</h1>
-              <Badge variant="default">{{ app.status }}</Badge>
+              <Badge variant="default" class="text-[10px] px-1.5 py-0">{{ app.status }}</Badge>
             </div>
             <p class="text-muted-foreground">
               {{ app.description }}
@@ -133,33 +125,7 @@ const maxConnections = computed(() =>
       <!-- 3 Blocs horizontaux -->
       <div class="grid gap-4 md:grid-cols-3">
         <!-- Logs -->
-        <Card class="flex flex-col">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <FileText class="h-5 w-5" />
-              Logs
-            </CardTitle>
-            <CardDescription>15 derniers événements</CardDescription>
-          </CardHeader>
-          <CardContent class="flex-1 overflow-auto">
-            <div class="space-y-2">
-              <div
-                v-for="log in app.logs"
-                :key="log.id"
-                class="text-xs border-b pb-2 last:border-b-0"
-              >
-                <div class="flex items-start gap-2 mb-1">
-                  <Badge :variant="getLogLevelVariant(log.level)" class="text-xs uppercase">
-                    {{ log.level }}
-                  </Badge>
-                  <span class="text-muted-foreground">{{ log.timestamp }}</span>
-                </div>
-                <p class="text-sm">{{ log.message }}</p>
-                <p class="text-muted-foreground mt-1">Par: {{ log.user }}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <LogsList :logs="app.logs" :app-id="app.code_solution" />
 
         <!-- Appels API -->
         <Card class="flex flex-col">
@@ -170,7 +136,7 @@ const maxConnections = computed(() =>
             </CardTitle>
             <CardDescription>15 dernières requêtes</CardDescription>
           </CardHeader>
-          <CardContent class="flex-1 overflow-auto">
+          <CardContent class="overflow-auto" style="max-height: 350px;">
             <div class="space-y-2">
               <div
                 v-for="call in app.api_calls"
@@ -179,20 +145,28 @@ const maxConnections = computed(() =>
               >
                 <div class="flex items-center justify-between mb-1">
                   <div class="flex items-center gap-2">
-                    <Badge variant="secondary" class="text-xs font-mono">
+                    <Badge variant="secondary" class="text-[10px] px-1.5 py-0 font-mono">
                       {{ call.method }}
                     </Badge>
-                    <Badge :variant="getStatusVariant(call.status)">
+                    <Badge :variant="getStatusVariant(call.status)" class="text-[10px] px-1.5 py-0">
                       {{ call.status }}
                     </Badge>
                   </div>
-                  <span class="text-muted-foreground">{{ call.duration }}</span>
+                  <span class="text-xs text-muted-foreground">{{ call.duration }}</span>
                 </div>
-                <p class="text-sm font-mono">{{ call.endpoint }}</p>
-                <p class="text-muted-foreground mt-1">{{ call.timestamp }}</p>
+                <p class="text-xs font-mono">{{ call.endpoint }}</p>
+                <p class="text-xs text-muted-foreground mt-1">{{ call.timestamp }}</p>
               </div>
             </div>
           </CardContent>
+          <CardFooter class="pt-4">
+            <Link :href="`/app/${app.code_solution}/api-calls`" class="w-full">
+              <Button variant="outline" class="w-full">
+                Voir tous les appels API
+                <ArrowRight class="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </CardFooter>
         </Card>
 
         <!-- Connexions (Heatmap) -->
@@ -232,6 +206,14 @@ const maxConnections = computed(() =>
               </div>
             </div>
           </CardContent>
+          <CardFooter class="border-t pt-4">
+            <Link :href="`/app/${app.code_solution}/connections`" class="w-full">
+              <Button variant="outline" class="w-full" size="sm">
+                <ArrowRight class="h-4 w-4 mr-2" />
+                Voir toutes les connexions
+              </Button>
+            </Link>
+          </CardFooter>
         </Card>
       </div>
     </div>

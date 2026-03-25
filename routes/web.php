@@ -3,8 +3,12 @@
 use App\Http\Controllers\Api\AvailableFieldsController;
 use App\Http\Controllers\Api\GenerateLeadsController;
 use App\Http\Controllers\Api\SegmentPreviewController;
+use App\Http\Controllers\ApiCallsController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\ApplicationsController;
+use App\Http\Controllers\ConnectionsController;
+use App\Http\Controllers\LargeDataController;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\Segments\EditController;
 use App\Http\Controllers\Segments\ExecuteController;
 use App\Http\Controllers\Segments\IndexController;
@@ -20,8 +24,26 @@ Route::inertia('/', 'Welcome', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
+    // Large Data Demo - Chunking demonstration
+    Route::get('large-data', [LargeDataController::class, 'index'])->name('large-data.index');
+
     // Applications - List all applications with search
     Route::get('applications', ApplicationsController::class)->name('applications.index');
+
+    // App Logs - Show all logs for application (more specific route first)
+    Route::get('app/{id}/logs', LogsController::class)
+        ->where('id', '[A-Za-z0-9]{5}')
+        ->name('app.logs');
+
+    // App API Calls - Show all API calls for application
+    Route::get('app/{id}/api-calls', ApiCallsController::class)
+        ->where('id', '[A-Za-z0-9]{5}')
+        ->name('app.api-calls');
+
+    // App Connections - Show all connections for application
+    Route::get('app/{id}/connections', ConnectionsController::class)
+        ->where('id', '[A-Za-z0-9]{5}')
+        ->name('app.connections');
 
     // App Details - Show application details by code solution
     Route::get('app/{id}', AppController::class)
@@ -66,6 +88,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('available-fields', AvailableFieldsController::class)->name('api.available-fields');
         Route::post('segment-preview', SegmentPreviewController::class)->name('api.segment-preview');
         Route::post('generate-leads', GenerateLeadsController::class)->name('api.generate-leads');
+        
+        // Large Data API - Chunked data endpoint
+        Route::get('large-data', [LargeDataController::class, 'getData'])->name('api.large-data');
     });
 });
 
