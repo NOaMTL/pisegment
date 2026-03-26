@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\SegmentPreviewController;
 use App\Http\Controllers\ApiCallsController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\ApplicationsController;
+use App\Http\Controllers\ColumnPreferenceController;
 use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\LargeDataController;
 use App\Http\Controllers\LogsController;
@@ -26,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Large Data Demo - Chunking demonstration
     Route::get('large-data', [LargeDataController::class, 'index'])->name('large-data.index');
+
+    // Column Manager - Grid avec préférences de colonnes
+    Route::inertia('column-manager', 'ColumnManager/Index')->name('column-manager.index');
 
     // Applications - List all applications with search
     Route::get('applications', ApplicationsController::class)->name('applications.index');
@@ -88,9 +92,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('available-fields', AvailableFieldsController::class)->name('api.available-fields');
         Route::post('segment-preview', SegmentPreviewController::class)->name('api.segment-preview');
         Route::post('generate-leads', GenerateLeadsController::class)->name('api.generate-leads');
-        
-        // Large Data API - Chunked data endpoint
-        Route::get('large-data', [LargeDataController::class, 'getData'])->name('api.large-data');
+
+        // Column Preferences API
+        Route::get('column-preferences', [ColumnPreferenceController::class, 'get'])->name('api.column-preferences.get');
+        Route::post('column-preferences', [ColumnPreferenceController::class, 'save'])->name('api.column-preferences.save');
+
+        // Large Data API - Available columns
+        Route::get('large-data-columns', [LargeDataController::class, 'getAvailableColumns'])->name('api.large-data-columns');
+
+        // Large Data API - Différentes méthodes de chargement
+        Route::get('large-data', [LargeDataController::class, 'getData'])->name('api.large-data'); // Query Builder (défaut)
+        Route::get('large-data-eloquent', [LargeDataController::class, 'getDataEloquent'])->name('api.large-data-eloquent');
+        Route::get('large-data-cursor', [LargeDataController::class, 'getDataCursor'])->name('api.large-data-cursor');
+        Route::get('large-data-cursor-optimized', [LargeDataController::class, 'getDataCursorOptimized'])->name('api.large-data-cursor-optimized');
+        Route::get('large-data-stream', [LargeDataController::class, 'getDataStream'])->name('api.large-data-stream');
     });
 });
 

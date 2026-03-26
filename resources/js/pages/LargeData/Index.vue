@@ -79,7 +79,7 @@ async function loadAllData() {
   const startTime = performance.now();
   
   try {
-    const perPage = 5000; // Taille des chunks
+    const perPage = 1000; // Taille des chunks
     let page = 0;
     let hasMore = true;
     let totalRecords = 0;
