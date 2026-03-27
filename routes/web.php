@@ -10,6 +10,7 @@ use App\Http\Controllers\ColumnPreferenceController;
 use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\LargeDataController;
 use App\Http\Controllers\LogsController;
+use App\Http\Controllers\PdfGeneratorController;
 use App\Http\Controllers\Segments\EditController;
 use App\Http\Controllers\Segments\ExecuteController;
 use App\Http\Controllers\Segments\IndexController;
@@ -30,6 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Column Manager - Grid avec préférences de colonnes
     Route::inertia('column-manager', 'ColumnManager/Index')->name('column-manager.index');
+
+    // PDF Generator - Page de test
+    Route::view('pdf-test', 'pdf-test')->name('pdf-test');
 
     // Applications - List all applications with search
     Route::get('applications', ApplicationsController::class)->name('applications.index');
@@ -106,6 +110,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('large-data-cursor', [LargeDataController::class, 'getDataCursor'])->name('api.large-data-cursor');
         Route::get('large-data-cursor-optimized', [LargeDataController::class, 'getDataCursorOptimized'])->name('api.large-data-cursor-optimized');
         Route::get('large-data-stream', [LargeDataController::class, 'getDataStream'])->name('api.large-data-stream');
+
+        // PDF Generator API
+        Route::post('generate-pdf', [PdfGeneratorController::class, 'generate'])->name('api.generate-pdf');
+        Route::get('generate-pdf', [PdfGeneratorController::class, 'generate'])->name('api.generate-pdf.get'); // Pour les tests GET
+        Route::get('generate-pdf/demo', [PdfGeneratorController::class, 'demo'])->name('api.generate-pdf.demo');
     });
 });
 
