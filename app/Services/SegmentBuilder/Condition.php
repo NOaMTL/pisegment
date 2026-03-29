@@ -10,6 +10,7 @@ class Condition
         public mixed $value,
         public bool $isEditable = false,
         public ?array $editableOptions = null,
+        public mixed $valueMax = null,
     ) {}
 
     public function toArray(): array
@@ -18,6 +19,7 @@ class Condition
             'field' => $this->field,
             'operator' => $this->operator->value,
             'value' => $this->value,
+            'value_max' => $this->valueMax,
             'is_editable' => $this->isEditable,
             'editable_options' => $this->editableOptions,
         ];
@@ -31,6 +33,7 @@ class Condition
             value: $data['value'],
             isEditable: $data['is_editable'] ?? false,
             editableOptions: $data['editable_options'] ?? null,
+            valueMax: $data['value_max'] ?? null,
         );
     }
 }

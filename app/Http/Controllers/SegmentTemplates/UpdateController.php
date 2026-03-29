@@ -4,7 +4,6 @@ namespace App\Http\Controllers\SegmentTemplates;
 
 use App\Http\Controllers\Controller;
 use App\Models\SegmentTemplate;
-use App\SegmentTemplateStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

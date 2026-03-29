@@ -29,10 +29,10 @@ class ConnectionsController extends Controller
         for ($i = 0; $i < $daysCount; $i++) {
             $dateObj = (clone $start)->modify("+{$i} days");
             $dateFormatted = $dateObj->format('Y-m-d');
-            
+
             // Generate random connection count for each day
             $count = rand(0, 200);
-            
+
             $connectionsByDay->push([
                 'date' => $dateFormatted,
                 'count' => $count,

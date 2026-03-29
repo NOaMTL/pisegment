@@ -25,10 +25,19 @@ class SegmentQueryBuilder
     {
         $query = Customer::query();
 
-        foreach ($this->conditionGroups as $group) {
-            $query->where(function (Builder $q) use ($group) {
-                $this->applyConditionGroup($q, $group);
-            });
+        foreach ($this->conditionGroups as $index => $group) {
+            // First group always uses 'where', subsequent groups use the previous group's nextOperator
+            if ($index === 0) {
+                $query->where(function (Builder $q) use ($group) {
+                    $this->applyConditionGroup($q, $group);
+                });
+            } else {
+                $previousGroup = $this->conditionGroups[$index - 1];
+                $method = ($previousGroup->nextOperator ?? 'AND') === 'OR' ? 'orWhere' : 'where';
+                $query->$method(function (Builder $q) use ($group) {
+                    $this->applyConditionGroup($q, $group);
+                });
+            }
         }
 
         return $query;
@@ -56,7 +65,7 @@ class SegmentQueryBuilder
             OperatorType::NotContains => $query->$method($condition->field, 'NOT LIKE', "%{$condition->value}%"),
             OperatorType::In => $query->$method(fn ($q) => $q->whereIn($condition->field, $condition->value)),
             OperatorType::NotIn => $query->$method(fn ($q) => $q->whereNotIn($condition->field, $condition->value)),
-            OperatorType::Between => $query->$method(fn ($q) => $q->whereBetween($condition->field, $condition->value)),
+            OperatorType::Between => $query->$method(fn ($q) => $q->whereBetween($condition->field, [$condition->value, $condition->valueMax])),
             OperatorType::IsNull => $query->$method(fn ($q) => $q->whereNull($condition->field)),
             OperatorType::IsNotNull => $query->$method(fn ($q) => $q->whereNotNull($condition->field)),
         };

@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AvailableFieldsController;
+use App\Http\Controllers\Api\DatabaseColumnsController;
+use App\Http\Controllers\Api\FilterFieldController;
+use App\Http\Controllers\Api\FilterGroupController;
 use App\Http\Controllers\Api\GenerateLeadsController;
+use App\Http\Controllers\Api\SegmentExportController;
 use App\Http\Controllers\Api\SegmentPreviewController;
 use App\Http\Controllers\ApiCallsController;
 use App\Http\Controllers\AppController;
@@ -89,13 +93,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:staff')->group(function () {
         Route::inertia('segment-requests/review', 'SegmentRequests/Review')->name('segment-requests.review');
         Route::inertia('segment-templates', 'SegmentTemplates/Index')->name('segment-templates.index');
+        Route::inertia('admin/filter-fields', 'Admin/FilterFields/Index')->name('admin.filter-fields.index');
+        Route::inertia('admin/filter-groups', 'Admin/FilterGroups/Index')->name('admin.filter-groups.index');
     });
 
     // API routes
     Route::prefix('api')->group(function () {
         Route::get('available-fields', AvailableFieldsController::class)->name('api.available-fields');
+        Route::get('database-columns', [DatabaseColumnsController::class, 'index'])->name('api.database-columns');
         Route::post('segment-preview', SegmentPreviewController::class)->name('api.segment-preview');
+        Route::post('segment-export', SegmentExportController::class)->name('api.segment-export');
         Route::post('generate-leads', GenerateLeadsController::class)->name('api.generate-leads');
+
+        // Filter Fields Management (Admin)
+        Route::apiResource('filter-fields', FilterFieldController::class);
+        Route::post('filter-fields/{filterField}/toggle-active', [FilterFieldController::class, 'toggleActive'])->name('api.filter-fields.toggle-active');
+        Route::post('filter-fields-reorder', [FilterFieldController::class, 'reorder'])->name('api.filter-fields.reorder');
+
+        // Filter Groups Management (Admin)
+        Route::get('filter-groups-active', [FilterGroupController::class, 'active'])->name('api.filter-groups.active');
+        Route::apiResource('filter-groups', FilterGroupController::class);
+        Route::post('filter-groups/{filterGroup}/toggle-active', [FilterGroupController::class, 'toggleActive'])->name('api.filter-groups.toggle-active');
+        Route::post('filter-groups-reorder', [FilterGroupController::class, 'reorder'])->name('api.filter-groups.reorder');
 
         // Column Preferences API
         Route::get('column-preferences', [ColumnPreferenceController::class, 'get'])->name('api.column-preferences.get');

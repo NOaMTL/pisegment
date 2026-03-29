@@ -2,6 +2,7 @@
 import { BookOpen, FolderGit2, LayoutGrid, AppWindow } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
+import NavSegmentation from '@/components/NavSegmentation.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
@@ -42,6 +43,7 @@ const footerNavItems: NavItem[] = [
     <Sidebar collapsible="icon" variant="inset">
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavSegmentation />
         </SidebarContent>
 
         <SidebarFooter>

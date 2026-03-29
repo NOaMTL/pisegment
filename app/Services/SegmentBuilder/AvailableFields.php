@@ -20,13 +20,21 @@ class AvailableFields
                         'field' => 'birth_date',
                         'type' => FieldType::Number,
                         'description' => 'Âge du client',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Number->getAvailableOperators()
+                        ),
                     ],
                     'city' => [
                         'label' => 'Ville',
                         'field' => 'city',
-                        'type' => FieldType::MultiSelect,
+                        'type' => FieldType::Select,
                         'description' => 'Ville de résidence',
                         'options' => ['Bordeaux', 'Mérignac', 'Pessac', 'Talence', 'Bègles', 'Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice'],
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Select->getAvailableOperators()
+                        ),
                     ],
                 ],
             ],
@@ -38,12 +46,20 @@ class AvailableFields
                         'field' => 'average_balance',
                         'type' => FieldType::Number,
                         'description' => 'Solde moyen du compte',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Number->getAvailableOperators()
+                        ),
                     ],
                     'monthly_income' => [
                         'label' => 'Revenus mensuels',
                         'field' => 'monthly_income',
                         'type' => FieldType::Number,
                         'description' => 'Revenus mensuels déclarés',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Number->getAvailableOperators()
+                        ),
                     ],
                 ],
             ],
@@ -55,24 +71,40 @@ class AvailableFields
                         'field' => 'has_life_insurance',
                         'type' => FieldType::Boolean,
                         'description' => 'Possède une assurance-vie',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Boolean->getAvailableOperators()
+                        ),
                     ],
                     'has_home_loan' => [
                         'label' => 'Crédit immobilier',
                         'field' => 'has_home_loan',
                         'type' => FieldType::Boolean,
                         'description' => 'Possède un crédit immobilier',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Boolean->getAvailableOperators()
+                        ),
                     ],
                     'has_car_loan' => [
                         'label' => 'Crédit automobile',
                         'field' => 'has_car_loan',
                         'type' => FieldType::Boolean,
                         'description' => 'Possède un crédit automobile',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Boolean->getAvailableOperators()
+                        ),
                     ],
                     'insurance_count' => [
                         'label' => 'Nombre d\'assurances',
                         'field' => 'insurance_count',
                         'type' => FieldType::Number,
                         'description' => 'Nombre total d\'assurances souscrites',
+                        'operators' => array_map(
+                            fn ($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Number->getAvailableOperators()
+                        ),
                     ],
                 ],
             ],
@@ -96,7 +128,11 @@ class AvailableFields
         ];
     }
 
-    /**
+    /**    'operators' => array_map(
+                            fn($op) => ['value' => $op->value, 'label' => $op->label()],
+                            FieldType::Number->getAvailableOperators()
+                        ),
+
      * Get a specific field configuration.
      */
     public static function get(string $fieldKey): ?array

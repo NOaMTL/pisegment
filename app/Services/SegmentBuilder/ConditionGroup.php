@@ -10,6 +10,7 @@ class ConditionGroup
     public function __construct(
         public string $logicalOperator = 'AND', // AND or OR
         public array $conditions = [],
+        public ?string $nextOperator = null, // AND or OR - operator to use before the next group
     ) {}
 
     public function addCondition(Condition $condition): self
@@ -21,15 +22,25 @@ class ConditionGroup
 
     public function toArray(): array
     {
-        return [
+        $array = [
             'logical_operator' => $this->logicalOperator,
             'conditions' => array_map(fn (Condition $c) => $c->toArray(), $this->conditions),
         ];
+
+        if ($this->nextOperator !== null) {
+            $array['next_operator'] = $this->nextOperator;
+        }
+
+        return $array;
     }
 
     public static function fromArray(array $data): self
     {
-        $group = new self($data['logical_operator'] ?? 'AND');
+        $group = new self(
+            $data['logical_operator'] ?? 'AND',
+            [],
+            $data['next_operator'] ?? null
+        );
 
         foreach ($data['conditions'] ?? [] as $conditionData) {
             $group->addCondition(Condition::fromArray($conditionData));

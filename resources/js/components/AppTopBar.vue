@@ -31,7 +31,7 @@ const userInitials = computed(() => {
 <template>
   <header
     class="fixed top-0 left-0 right-0 z-50 h-14 text-white"
-    style="background-color: #0a0a0a; border-bottom: 1px solid #0a0a0a;"
+    style="background: linear-gradient(to right, #004652, #308276); border-bottom: 1px solid #004652;"
   >
     <div class="flex h-full items-center justify-between px-4">
       <!-- Logo et titre -->

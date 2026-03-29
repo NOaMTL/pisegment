@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Http\GuzzleHttpClient;
+use App\Services\Http\HttpClientInterface;
+use App\Services\Mail\LaravelMailService;
+use App\Services\Mail\MailServiceInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind MailServiceInterface to LaravelMailService
+        $this->app->bind(MailServiceInterface::class, LaravelMailService::class);
+
+        // Bind HttpClientInterface to GuzzleHttpClient
+        $this->app->bind(HttpClientInterface::class, GuzzleHttpClient::class);
+
+        // You can also use singleton if you want only one instance
+        // $this->app->singleton(MailServiceInterface::class, LaravelMailService::class);
+        // $this->app->singleton(HttpClientInterface::class, GuzzleHttpClient::class);
     }
 
     /**

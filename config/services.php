@@ -35,4 +35,26 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | External API Configuration (Pour CronApiService)
+    |--------------------------------------------------------------------------
+    |
+    | Configuration pour les appels API externes via CRON.
+    | Utilisé par App\Services\ExternalApi\CronApiService
+    |
+    | Variables d'environnement requises:
+    | - EXTERNAL_API_BASE_URI : URL de base de l'API (ex: https://api.external.com)
+    | - EXTERNAL_API_CLIENT_ID : Client ID OAuth
+    | - EXTERNAL_API_CLIENT_SECRET : Client Secret OAuth
+    | - EXTERNAL_API_PROXY : (Optionnel) URL du proxy (ex: http://proxy.company.com:8080)
+    |
+    */
+    'external_api' => [
+        'base_uri' => env('EXTERNAL_API_BASE_URI'),
+        'client_id' => env('EXTERNAL_API_CLIENT_ID'),
+        'client_secret' => env('EXTERNAL_API_CLIENT_SECRET'),
+        'proxy' => env('EXTERNAL_API_PROXY', null),
+    ],
+
 ];

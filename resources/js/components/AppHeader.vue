@@ -50,6 +50,11 @@ const page = usePage();
 const auth = computed(() => page.props.auth);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
+const pageTitle = computed(() => {
+    if (props.breadcrumbs.length === 0) return '';
+    return props.breadcrumbs[props.breadcrumbs.length - 1].title;
+});
+
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
@@ -271,12 +276,17 @@ const rightNavItems: NavItem[] = [
 
         <div
             v-if="props.breadcrumbs.length > 1"
-            class="flex w-full border-b border-sidebar-border/70"
+            class="w-full border-b border-sidebar-border/70 bg-gray-50 dark:bg-gray-900/30"
         >
             <div
-                class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl"
+                class="mx-auto w-full px-4 py-4 md:max-w-7xl"
             >
-                <Breadcrumbs :breadcrumbs="breadcrumbs" />
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                    {{ pageTitle }}
+                </h1>
+                <div class="text-sm">
+                    <Breadcrumbs :breadcrumbs="breadcrumbs" />
+                </div>
             </div>
         </div>
     </div>

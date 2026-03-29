@@ -472,37 +472,38 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* Personnalisation du thème AG Grid dark */
+/* Personnalisation du thème AG Grid avec les couleurs de la marque */
 :deep(.ag-theme-quartz-dark) {
-  --ag-background-color: #27272a;
-  --ag-header-background-color: #3f3f46;
-  --ag-odd-row-background-color: #27272a;
-  --ag-row-hover-color: #3f3f46;
+  --ag-background-color: #293d5e;
+  --ag-header-background-color: #004652;
+  --ag-odd-row-background-color: #293d5e;
+  --ag-row-hover-color: #308276;
   --ag-foreground-color: #ffffff;
-  --ag-border-color: #52525b;
+  --ag-border-color: rgba(41, 61, 94, 0.5);
   --ag-header-foreground-color: #ffffff;
   --ag-secondary-foreground-color: #e4e4e7;
   
   /* Floating filters styling */
-  --ag-input-focus-border-color: #3b82f6;
-  --ag-input-border-color: #52525b;
+  --ag-input-focus-border-color: #004652;
+  --ag-input-border-color: rgba(41, 61, 94, 0.5);
 }
 
 /* Style des inputs de filtre (floating filters) */
 :deep(.ag-floating-filter-input) {
-  background-color: #27272a !important;
+  background-color: #293d5e !important;
   color: #ffffff !important;
-  border-color: #52525b !important;
+  border-color: rgba(41, 61, 94, 0.5) !important;
 }
 
 :deep(.ag-floating-filter-input:focus) {
-  border-color: #3b82f6 !important;
+  border-color: #004652 !important;
   outline: none !important;
+  box-shadow: 0 4px 16px 0 rgba(41, 61, 94, 0.1);
 }
 
 /* Style du body des floating filters */
 :deep(.ag-floating-filter-body) {
-  background-color: #3f3f46 !important;
+  background-color: #004652 !important;
 }
 
 /* Style des boutons de filtre */
@@ -512,5 +513,6 @@ onMounted(async () => {
 
 :deep(.ag-floating-filter-button:hover) {
   color: #ffffff !important;
+  background-color: #308276 !important;
 }
 </style>

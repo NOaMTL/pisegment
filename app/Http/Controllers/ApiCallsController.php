@@ -59,6 +59,7 @@ class ApiCallsController extends Controller
         // Filter by date range
         $allCalls = $allCalls->filter(function ($call) use ($startDate, $endDate) {
             $callDate = date('Y-m-d', strtotime($call['timestamp']));
+
             return $callDate >= $startDate && $callDate <= $endDate;
         })->sortByDesc('timestamp')->values();
 
@@ -83,7 +84,7 @@ class ApiCallsController extends Controller
             $count = $allCalls->filter(function ($call) use ($dateCompare) {
                 return date('Y-m-d', strtotime($call['timestamp'])) === $dateCompare;
             })->count();
-            
+
             $volumeByDay->push([
                 'date' => $dateFormatted,
                 'count' => $count,
@@ -99,9 +100,9 @@ class ApiCallsController extends Controller
             $callsForDay = $allCalls->filter(function ($call) use ($dateCompare) {
                 return date('Y-m-d', strtotime($call['timestamp'])) === $dateCompare;
             });
-            
+
             $avgLatency = $callsForDay->count() > 0 ? round($callsForDay->avg('duration')) : 0;
-            
+
             $latencyByDay->push([
                 'date' => $dateFormatted,
                 'avg_latency' => $avgLatency,

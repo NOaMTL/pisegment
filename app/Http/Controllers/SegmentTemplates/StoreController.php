@@ -36,6 +36,6 @@ class StoreController extends Controller
 
         return redirect()
             ->route('segments.index')
-            ->with('success', 'Segment "' . $template->name . '" créé avec succès !');
+            ->with('success', 'Segment "'.$template->name.'" créé avec succès !');
     }
 }
