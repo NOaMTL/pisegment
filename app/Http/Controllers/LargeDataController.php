@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -112,9 +113,9 @@ class LargeDataController extends Controller
 
         // Filtrer les colonnes selon la logique métier et le rôle utilisateur
         /** @var int|string|null $userId */
-        $userId = auth()->id();
+        $userId = Auth::id();
         /** @var User|null $user */
-        $user = auth()->user();
+        $user = Auth::user();
         $userRole = $user?->role ?? 'guest';
 
         // Exemple : les agents ne voient pas les colonnes financières sensibles

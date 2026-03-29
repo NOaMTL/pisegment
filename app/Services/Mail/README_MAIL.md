@@ -27,6 +27,7 @@ MailServiceInterface
 Implementations:
     ├── LaravelMailService (uses Laravel Mail facade)
     ├── PHPMailerService (uses PHPMailer - standalone)
+    ├── CustomMailService (adapter for your own Mail class) ⭐
     └── [Your Custom Implementation]
 
 MailBuilder (Fluent API)
@@ -500,6 +501,10 @@ $mailService->send(...);
 ```
 
 ### Create Custom Implementation
+
+**💡 Tip:** Si vous avez **votre propre classe `Mail`**, utilisez `CustomMailService` comme template ! Voir [CUSTOM_MAIL_GUIDE.md](./CUSTOM_MAIL_GUIDE.md)
+
+**Exemple - Créer un service SendGrid :**
 
 ```php
 use App\Services\Mail\MailServiceInterface;

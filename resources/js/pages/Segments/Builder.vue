@@ -30,6 +30,7 @@ interface AvailableField {
   type: string
   description: string
   options?: string[]
+  operators?: Array<{value: string, label: string}>
 }
 
 interface AvailableFields {
@@ -97,7 +98,7 @@ const segmentDescription = ref('')
 const isSaving = ref(false)
 const isModalOpen = ref(false)
 const modalMode = ref<'condition' | 'group'>('condition')
-let debounceTimer: NodeJS.Timeout | null = null
+let debounceTimer: number | null = null
 
 const steps = [
   { id: 1, label: 'Construction', description: 'Définissez les critères du segment' },

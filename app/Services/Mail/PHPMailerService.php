@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Mail;
 
+// Note: PHPMailer is not installed in this Laravel project
+// This file is meant to be copied to standalone PHP projects that have phpmailer/phpmailer installed
+// The following imports will work when PHPMailer is installed via: composer require phpmailer/phpmailer
+
+/** @phpstan-ignore-next-line */
 use PHPMailer\PHPMailer\PHPMailer;
+/** @phpstan-ignore-next-line */
 use PHPMailer\PHPMailer\SMTP;
 
 /**
@@ -143,9 +149,12 @@ class PHPMailerService implements MailServiceInterface
 
     /**
      * Create PHPMailer instance
+     * 
+     * @phpstan-ignore-next-line
      */
     private function createMailer(): PHPMailer
     {
+        /** @phpstan-ignore-next-line */
         $mail = new PHPMailer(true);
 
         // Server settings
@@ -165,6 +174,7 @@ class PHPMailerService implements MailServiceInterface
 
         // Debug mode
         if ($this->config['debug']) {
+            /** @phpstan-ignore-next-line */
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         }
 
@@ -179,6 +189,8 @@ class PHPMailerService implements MailServiceInterface
 
     /**
      * Add recipients to PHPMailer
+     * 
+     * @phpstan-ignore-next-line
      */
     private function addRecipients(PHPMailer $mail, string|array $recipients): void
     {
@@ -195,6 +207,8 @@ class PHPMailerService implements MailServiceInterface
 
     /**
      * Apply options to PHPMailer
+     * 
+     * @phpstan-ignore-next-line
      */
     private function applyOptions(PHPMailer $mail, array $options): void
     {

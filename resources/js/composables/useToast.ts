@@ -23,7 +23,7 @@ export function useToast() {
 
     toasts.value.push(newToast)
 
-    if (newToast.duration > 0) {
+    if (newToast.duration && newToast.duration > 0) {
       setTimeout(() => {
         removeToast(id)
       }, newToast.duration)

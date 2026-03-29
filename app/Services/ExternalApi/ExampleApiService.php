@@ -250,7 +250,7 @@ class ExampleApiService
 
             return null;
         } catch (\Exception $e) {
-            \Log::error('Token refresh failed', [
+            \Illuminate\Support\Facades\Log::error('Token refresh failed', [
                 'error' => $e->getMessage(),
             ]);
 

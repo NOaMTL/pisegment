@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserColumnPreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ColumnPreferenceController extends Controller
 {
@@ -15,7 +16,7 @@ class ColumnPreferenceController extends Controller
         $pageIdentifier = $request->query('page_identifier', 'large-data-grid');
 
         /** @var int|string|null $userId */
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         $preference = UserColumnPreference::where('user_id', $userId)
             ->where('page_identifier', $pageIdentifier)
@@ -38,7 +39,7 @@ class ColumnPreferenceController extends Controller
         ]);
 
         /** @var int|string|null $userId */
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         UserColumnPreference::updateOrCreate(
             [

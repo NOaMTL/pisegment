@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\Http\GuzzleHttpClient;
 use App\Services\Http\HttpClientInterface;
+use App\Services\Mail\CustomMailService;
 use App\Services\Mail\LaravelMailService;
 use App\Services\Mail\MailServiceInterface;
 use Carbon\CarbonImmutable;
@@ -19,9 +20,38 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind MailServiceInterface to LaravelMailService
+        // ============================================
+        // Mail Service - Choisissez votre implémentation
+        // ============================================
+        
+        // Option 1: Laravel Mail (par défaut)
         $this->app->bind(MailServiceInterface::class, LaravelMailService::class);
+        
+        // Option 2: Votre classe Mail personnalisée
+        // $this->app->bind(MailServiceInterface::class, CustomMailService::class);
+        
+        // Option 3: PHPMailer (pour tests)
+        // $this->app->bind(MailServiceInterface::class, function ($app) {
+        //     return new \App\Services\Mail\PHPMailerService([
+        //         'host' => config('mail.mailers.smtp.host'),
+        //         'port' => config('mail.mailers.smtp.port'),
+        //         'username' => config('mail.mailers.smtp.username'),
+        //         'password' => config('mail.mailers.smtp.password'),
+        //         'encryption' => config('mail.mailers.smtp.encryption'),
+        //         'from' => [
+        //             'email' => config('mail.from.address'),
+        //             'name' => config('mail.from.name'),
+        //         ],
+        //     ]);
+        // });
+        
+        // 💡 Pour basculer d'implémentation, changez juste la ligne ci-dessus !
+        //    Aucun changement dans vos contrôleurs ou services.
 
+        // ============================================
+        // HTTP Client
+        // ============================================
+        
         // Bind HttpClientInterface to GuzzleHttpClient
         $this->app->bind(HttpClientInterface::class, GuzzleHttpClient::class);
 

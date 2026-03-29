@@ -12,8 +12,7 @@ class SegmentPreviewTest extends TestCase
     use RefreshDatabase;
 
     public function test_can_preview_segment_results(): void
-    {
-        $user = User::factory()->create();
+    {        /** @var User $user */        $user = User::factory()->create();
 
         Customer::factory()->create(['city' => 'Bordeaux', 'average_balance' => 15000]);
         Customer::factory()->create(['city' => 'Bordeaux', 'average_balance' => 25000]);
@@ -62,6 +61,7 @@ class SegmentPreviewTest extends TestCase
 
     public function test_validates_request_data(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->postJson('/api/segment-preview', [
@@ -73,6 +73,7 @@ class SegmentPreviewTest extends TestCase
 
     public function test_can_preview_with_between_operator(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         Customer::factory()->create(['average_balance' => 5000]);

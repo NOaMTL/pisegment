@@ -220,20 +220,34 @@ class MailBuilder
 
     /**
      * Set sender (from)
+     * 
+     * @param string|array $email Email address or array with 'email' and 'name'
+     * @param string|null $name Optional name (only used if $email is string)
      */
-    public function from(string $email, ?string $name = null): self
+    public function from(string|array $email, ?string $name = null): self
     {
-        $this->from = ['email' => $email, 'name' => $name];
+        if (is_array($email)) {
+            $this->from = $email;
+        } else {
+            $this->from = ['email' => $email, 'name' => $name];
+        }
 
         return $this;
     }
 
     /**
      * Set reply-to address
+     * 
+     * @param string|array $email Email address or array with 'email' and 'name'
+     * @param string|null $name Optional name (only used if $email is string)
      */
-    public function replyTo(string $email, ?string $name = null): self
+    public function replyTo(string|array $email, ?string $name = null): self
     {
-        $this->replyTo = ['email' => $email, 'name' => $name];
+        if (is_array($email)) {
+            $this->replyTo = $email;
+        } else {
+            $this->replyTo = ['email' => $email, 'name' => $name];
+        }
 
         return $this;
     }

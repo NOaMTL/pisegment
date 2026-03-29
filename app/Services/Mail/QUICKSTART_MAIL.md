@@ -5,9 +5,15 @@ Guide de démarrage rapide pour le Mail Service avec architecture interchangeabl
 ## 🎯 Concepts Clés
 
 1. **Interface-based**: `MailServiceInterface` définit le contrat
-2. **Interchangeable**: Plusieurs implémentations possibles (Laravel, PHPMailer, SendGrid...)
+2. **Interchangeable**: Plusieurs implémentations possibles (Laravel, PHPMailer, Custom Mail, SendGrid...)
 3. **Portable**: Fonctionne dans Laravel OU PHP procédural
 4. **Fluent API**: `MailBuilder` pour construire des emails élégamment
+
+## 🔄 Implémentations Disponibles
+
+- **LaravelMailService** - Utilise Laravel Mail facade (pour Laravel)
+- **PHPMailerService** - Utilise PHPMailer SMTP (standalone)
+- **CustomMailService** - Adaptateur pour votre propre classe Mail ⭐
 
 ## ⚡ Quick Start - Laravel
 
@@ -145,6 +151,32 @@ $mailService->builder()
     ->send();
 ```
 
+### Option Alternative : Votre Propre Classe Mail ⭐
+
+Si vous utilisez **votre propre classe `Mail::send(...)`**, utilisez `CustomMailService` :
+
+**1. Copiez ces 3 fichiers :**
+- `MailServiceInterface.php`
+- `MailBuilder.php`  
+- `CustomMailService.php`
+
+**2. Adaptez la méthode `callYourMailClass()`** dans `CustomMailService.php` selon votre API Mail
+
+**3. Utilisez-le (même API) :**
+```php
+$mailService = new CustomMailService();
+
+$mailService->send('user@example.com', 'Subject', '<h1>Body</h1>');
+
+$mailService->builder()
+    ->to('user@example.com')
+    ->subject('Test')
+    ->attach('/path/to/file.pdf')
+    ->send();
+```
+
+**📚 Guide complet : [CUSTOM_MAIL_GUIDE.md](./CUSTOM_MAIL_GUIDE.md)**
+
 ## 📋 Common Use Cases
 
 ### Send Order Confirmation
@@ -248,12 +280,27 @@ $mailService = new PHPMailerService([...config...]);
 $mailService->send(...);
 ```
 
+### Laravel to Custom Mail
+
+```php
+// Before (Laravel)
+$mailService = new LaravelMailService();
+
+// After (Your Mail class)
+$mailService = new CustomMailService();
+
+// Same API!
+$mailService->send(...);
+```
+
 ### Runtime Decision
 
 ```php
 // Choose implementation based on environment
 if (app()->environment('production')) {
     $mailService = new LaravelMailService();
+} elseif (defined('USE_CUSTOM_MAIL')) {
+    $mailService = new CustomMailService();
 } else {
     $mailService = new PHPMailerService([
         'host' => 'smtp.mailtrap.io',
