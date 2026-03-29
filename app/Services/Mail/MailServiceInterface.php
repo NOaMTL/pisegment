@@ -9,22 +9,22 @@ interface MailServiceInterface
     /**
      * Send a simple email
      *
-     * @param  string  $to  Recipient email address
+     * @param  string|array  $to  Recipient email address(es) - single string or array
      * @param  string  $subject  Email subject
      * @param  string  $body  Email body (HTML or plain text)
      * @param  array  $options  Additional options (cc, bcc, attachments, etc.)
      * @return bool Success status
      */
-    public function send(string $to, string $subject, string $body, array $options = []): bool;
+    public function send(string|array $to, string $subject, string $body, array $options = []): bool;
 
     /**
      * Send email using a Mailable class
      *
-     * @param  string  $to  Recipient email address
+     * @param  string|array  $to  Recipient email address(es)
      * @param  Mailable  $mailable  Laravel Mailable instance
      * @return bool Success status
      */
-    public function sendMailable(string $to, $mailable): bool;
+    public function sendMailable(string|array $to, $mailable): bool;
 
     /**
      * Send email to multiple recipients
@@ -40,11 +40,18 @@ interface MailServiceInterface
     /**
      * Queue an email for later sending
      *
-     * @param  string  $to  Recipient email address
+     * @param  string|array  $to  Recipient email address(es)
      * @param  string  $subject  Email subject
      * @param  string  $body  Email body
      * @param  array  $options  Additional options
      * @return bool Success status
      */
-    public function queue(string $to, string $subject, string $body, array $options = []): bool;
+    public function queue(string|array $to, string $subject, string $body, array $options = []): bool;
+
+    /**
+     * Create a mail builder for fluent configuration
+     *
+     * @return MailBuilder
+     */
+    public function builder(): MailBuilder;
 }

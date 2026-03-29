@@ -9,55 +9,35 @@ class LaravelMailService implements MailServiceInterface
 {
     /**
      * Send a simple email
+     *
+     * @param  string|array  $to  Single recipient or array of recipients
      */
-    public function send(string $to, string $subject, string $body, array $options = []): bool
+    public function send(string|array $to, string $subject, string $body, array $options = []): bool
     {
         try {
-            Mail::send([], [], function ($message) use ($to, $subject, $body, $options) {
-                $message->to($to)
-                    ->subject($subject)
-                    ->html($body);
+            // Normalize recipients to array
+            $recipients = is_array($to) ? $to : [$to];
 
-                // Handle CC
-                if (isset($options['cc'])) {
-                    $message->cc($options['cc']);
-                }
-
-                // Handle BCC
-                if (isset($options['bcc'])) {
-                    $message->bcc($options['bcc']);
-                }
-
-                // Handle attachments
-                if (isset($options['attachments']) && is_array($options['attachments'])) {
-                    foreach ($options['attachments'] as $attachment) {
-                        if (is_string($attachment)) {
-                            $message->attach($attachment);
-                        } elseif (is_array($attachment)) {
-                            $message->attach(
-                                $attachment['path'],
-                                $attachment['options'] ?? []
-                            );
-                        }
+            Mail::send([], [], function ($message) use ($recipients, $subject, $body, $options) {
+                // Add all recipients
+                foreach ($recipients as $recipient) {
+                    if (is_array($recipient)) {
+                        $message->to($recipient['email'], $recipient['name'] ?? null);
+                    } else {
+                        $message->to($recipient);
                     }
                 }
 
-                // Handle from address
-                if (isset($options['from'])) {
-                    $message->from(
-                        $options['from']['email'] ?? $options['from'],
-                        $options['from']['name'] ?? null
-                    );
-                }
+                $message->subject($subject)
+                    ->html($body);
 
-                // Handle reply-to
-                if (isset($options['replyTo'])) {
-                    $message->replyTo(
-                        $options['replyTo']['email'] ?? $options['replyTo'],
-                        $options['replyTo']['name'] ?? null
-                    );
-                }
+                $this->applyOptions($message, $options);
             });
+
+            Log::info('Email sent successfully', [
+                'to' => $recipients,
+                'subject' => $subject,
+            ]);
 
             return true;
         } catch (\Exception $e) {
@@ -73,11 +53,17 @@ class LaravelMailService implements MailServiceInterface
 
     /**
      * Send email using a Mailable class
+     *
+     * @param  string|array  $to  Single recipient or array of recipients
      */
-    public function sendMailable(string $to, $mailable): bool
+    public function sendMailable(string|array $to, $mailable): bool
     {
         try {
-            Mail::to($to)->send($mailable);
+            $recipients = is_array($to) ? $to : [$to];
+
+            foreach ($recipients as $recipient) {
+                Mail::to($recipient)->send($mailable);
+            }
 
             return true;
         } catch (\Exception $e) {
@@ -115,46 +101,28 @@ class LaravelMailService implements MailServiceInterface
 
     /**
      * Queue an email for later sending
+     *
+     * @param  string|array  $to  Single recipient or array of recipients
      */
-    public function queue(string $to, string $subject, string $body, array $options = []): bool
+    public function queue(string|array $to, string $subject, string $body, array $options = []): bool
     {
         try {
-            Mail::queue([], [], function ($message) use ($to, $subject, $body, $options) {
-                $message->to($to)
-                    ->subject($subject)
-                    ->html($body);
+            $recipients = is_array($to) ? $to : [$to];
 
-                // Handle CC
-                if (isset($options['cc'])) {
-                    $message->cc($options['cc']);
-                }
-
-                // Handle BCC
-                if (isset($options['bcc'])) {
-                    $message->bcc($options['bcc']);
-                }
-
-                // Handle attachments
-                if (isset($options['attachments']) && is_array($options['attachments'])) {
-                    foreach ($options['attachments'] as $attachment) {
-                        if (is_string($attachment)) {
-                            $message->attach($attachment);
-                        } elseif (is_array($attachment)) {
-                            $message->attach(
-                                $attachment['path'],
-                                $attachment['options'] ?? []
-                            );
-                        }
+            Mail::queue([], [], function ($message) use ($recipients, $subject, $body, $options) {
+                // Add all recipients
+                foreach ($recipients as $recipient) {
+                    if (is_array($recipient)) {
+                        $message->to($recipient['email'], $recipient['name'] ?? null);
+                    } else {
+                        $message->to($recipient);
                     }
                 }
 
-                // Handle from address
-                if (isset($options['from'])) {
-                    $message->from(
-                        $options['from']['email'] ?? $options['from'],
-                        $options['from']['name'] ?? null
-                    );
-                }
+                $message->subject($subject)
+                    ->html($body);
+
+                $this->applyOptions($message, $options);
             });
 
             return true;
@@ -166,6 +134,93 @@ class LaravelMailService implements MailServiceInterface
             ]);
 
             return false;
+        }
+    }
+
+    /**
+     * Create a mail builder for fluent configuration
+     */
+    public function builder(): MailBuilder
+    {
+        return new MailBuilder($this);
+    }
+
+    /**
+     * Apply options to the message (CC, BCC, attachments, etc.)
+     */
+    private function applyOptions($message, array $options): void
+    {
+        // Handle CC
+        if (isset($options['cc']) && ! empty($options['cc'])) {
+            $cc = is_array($options['cc']) ? $options['cc'] : [$options['cc']];
+            foreach ($cc as $ccRecipient) {
+                if (is_array($ccRecipient)) {
+                    $message->cc($ccRecipient['email'], $ccRecipient['name'] ?? null);
+                } else {
+                    $message->cc($ccRecipient);
+                }
+            }
+        }
+
+        // Handle BCC
+        if (isset($options['bcc']) && ! empty($options['bcc'])) {
+            $bcc = is_array($options['bcc']) ? $options['bcc'] : [$options['bcc']];
+            foreach ($bcc as $bccRecipient) {
+                if (is_array($bccRecipient)) {
+                    $message->bcc($bccRecipient['email'], $bccRecipient['name'] ?? null);
+                } else {
+                    $message->bcc($bccRecipient);
+                }
+            }
+        }
+
+        // Handle attachments
+        if (isset($options['attachments']) && is_array($options['attachments']) && ! empty($options['attachments'])) {
+            foreach ($options['attachments'] as $attachment) {
+                if (is_string($attachment)) {
+                    // Simple file path
+                    $message->attach($attachment);
+                } elseif (is_array($attachment)) {
+                    if (isset($attachment['type']) && $attachment['type'] === 'data') {
+                        // Attach raw data
+                        $message->attachData(
+                            $attachment['data'],
+                            $attachment['name'],
+                            $attachment['options'] ?? []
+                        );
+                    } else {
+                        // Attach file with options
+                        $message->attach(
+                            $attachment['path'],
+                            $attachment['options'] ?? []
+                        );
+                    }
+                }
+            }
+        }
+
+        // Handle from address
+        if (isset($options['from'])) {
+            if (is_array($options['from'])) {
+                $message->from(
+                    $options['from']['email'],
+                    $options['from']['name'] ?? null
+                );
+            } else {
+                $message->from($options['from']);
+            }
+        }
+
+        // Handle reply-to
+        if (isset($options['replyTo'])) {
+            if (is_array($options['replyTo'])) {
+                $message->replyTo(
+                    $options['replyTo']['email'],
+                    $options['replyTo']['name'] ?? null
+                );
+            } else {
+                $message->replyTo($options['replyTo']);
+            }
         }
     }
 }
